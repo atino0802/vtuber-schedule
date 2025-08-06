@@ -1,3 +1,28 @@
+// 統計區渲染
+function renderStats(streams) {
+  // 狀態分類
+  let liveCount = 0, upcomingCount = 0, todayCount = 0;
+  const now = new Date();
+  const todayStr = now.toISOString().slice(0, 10); // 'YYYY-MM-DD'
+  streams.forEach(stream => {
+    const time = stream.available_at || stream.published_at || stream.start_scheduled || "";
+    if (stream.status === 'live' && !stream.actual_end_at) {
+      liveCount++;
+    } else if (stream.status !== 'ended' && !stream.actual_end_at && new Date(time) > now) {
+      upcomingCount++;
+    }
+    // 判斷是否為今天的直播（只看日期部分）
+    if (time) {
+      const streamDate = new Date(time).toISOString().slice(0, 10);
+      if (streamDate === todayStr) {
+        todayCount++;
+      }
+    }
+  });
+  document.getElementById('stat-live').textContent = liveCount;
+  document.getElementById('stat-upcoming').textContent = upcomingCount;
+  document.getElementById('stat-total').textContent = todayCount;
+}
 const HOLODEX_API_URL = "https://holodex.net/api/v2/videos";
 const HOLODEX_API_KEY = "fbe36b98-eddb-4db1-9df8-83a4fb6d34f0";
 
@@ -36,6 +61,24 @@ const GROUP_GEN_MAP = {
 };
 
 // 動態產生群組與世代按鈕
+// gen 顯示名稱對照表（可自行填寫）
+const GEN_DISPLAY_MAP = {
+  gen0: "Gen0",
+  gen1: "Gen1",
+  gen2: "Gen2",
+  gen3: "Gen3",
+  gen4: "Gen4",
+  gen5: "Gen5",
+  gamers: "GAMERS",
+  holox: "HoloX",
+  regloss: "ReGLOSS",
+  flowglow: "FLOW GLOW",
+  myth: "Myth",
+  promise: "Promise",
+  advent: "Advent",
+  justice: "Justice",
+  // ...可自行補充
+};
 function renderFilterButtons() {
   const groupBar = document.getElementById("group-buttons");
   const genBar = document.getElementById("gen-buttons");
@@ -60,12 +103,16 @@ function renderFilterButtons() {
   let gens = [];
   if (!activeFilter.group || activeFilter.group === "ALL") {
     genBar.innerHTML = "";
+    // 額外：隱藏世代標題
+    const genTitle = document.getElementById("gen-title");
+    if (genTitle) genTitle.style.display = "none";
     return;
   }
   gens = GROUP_GEN_MAP[activeFilter.group] || [];
   ["ALL", ...gens].forEach((gen) => {
     const btn = document.createElement("button");
-    btn.textContent = gen;
+    // 顯示名稱優先用對照表，沒有則用原始 gen
+    btn.textContent = GEN_DISPLAY_MAP[gen] || gen;
     btn.dataset.gen = gen;
     // ALL 按鈕在 gen 為 null 或 ALL 時都高亮
     const isActive = (gen === "ALL" && (!activeFilter.gen || activeFilter.gen === "ALL")) || (activeFilter.gen === gen);
@@ -75,6 +122,15 @@ function renderFilterButtons() {
     };
     genBar.appendChild(btn);
   });
+  // 額外：根據 genBar 是否有內容顯示/隱藏世代標題
+  const genTitle = document.getElementById("gen-title");
+  if (genTitle) {
+    if (genBar.innerHTML.trim() === "") {
+      genTitle.style.display = "none";
+    } else {
+      genTitle.style.display = "";
+    }
+  }
 }
 
 // 儲存目前的過濾條件
@@ -245,7 +301,9 @@ async function renderAll() {
     allStreamsCache = streams;
     renderAll.forceRefresh = false;
   }
-  renderStreamCards(getFilteredStreams());
+  const filteredStreams = getFilteredStreams();
+  renderStreamCards(filteredStreams);
+  renderStats(filteredStreams);
 }
 
 // 每分鐘自動刷新資料

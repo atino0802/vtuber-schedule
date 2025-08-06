@@ -12,24 +12,53 @@
 }
 /* 強化被選取按鈕的提示 */
 .filter-btn.active {
-  background: #0078d7;
+  background: linear-gradient(90deg, #e664fa 0%, #7b8df2 100%);
   color: #fff;
-  border: 2px solid #005fa3;
+  border: 2px solid rgba(255, 255, 255, 0.18);
   font-weight: bold;
-  box-shadow: 0 2px 8px rgba(0,120,215,0.15);
-  transition: background 0.2s, color 0.2s, border 0.2s;
-}
-body {
-  font-family: sans-serif;
-  margin: 0;
-  background-color: #f4f4f4;
+  box-shadow: 0 2px 8px rgba(123, 141, 242, 0.15);
+  transform: scale(1.08);
+  transition: background 0.2s, color 0.2s, border 0.2s, transform 0.2s;
 }
 
-header {
-  background-color: #222;
-  color: white;
-  padding: 1rem;
-  text-align: center;
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap");
+body {
+  font-family: "Noto Sans TC", sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.glass-effect {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+header.glass-effect {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 2px 12px rgba(100, 100, 150, 0.08);
+}
+
+.header-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #fff;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.header-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(45deg, #f472b6, #a855f7);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 main {
@@ -104,29 +133,63 @@ main {
 }
 
 .vtuber-section {
-  margin-bottom: 30px;
-}
-
-.filter-bar {
-  text-align: center;
   margin-bottom: 1rem;
 }
 
-.filter-bar button {
-  margin: 0.2rem;
-  padding: 0.5rem 0.3rem;
-  border: none;
-  background-color: #ddd;
-  cursor: pointer;
-  border-radius: 6px;
-  transition: background-color 0.2s;
-  width: 80px;
-  min-width: 80px;
-  text-align: center;
-  font-size: 1rem;
-  box-sizing: border-box;
+.filter-bar {
+  text-align: left;
+  margin-bottom: 1.5rem;
 }
 
+#group-buttons {
+  margin-bottom: 1.5rem; /* 兩排按鈕的間距 */
+}
+
+.filter-bar button {
+  /* 間距和大小 */
+  margin: 0.2rem 0.5rem 0 0; /* 外距 */
+  padding: 0.5rem 1rem; /* 內距 */
+  min-width: 64px;
+  /* 外觀設計 */
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 999px;
+  /* 文字樣式 */
+  font-family: "PMingLiU";
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.875rem;
+  font-weight: 300;
+  text-align: center;
+  /* 互動效果 */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  /* 其他設定 */
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 懸停效果 */
 .filter-bar button:hover {
-  background-color: #bbb;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* 點擊效果 */
+.filter-bar button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 選中狀態 */
+.filter-bar button.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border: none;
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
 }
